@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres'; // Use the Node.js Postgres adapter
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 import {
   pgTable,
   text,
@@ -14,13 +14,7 @@ import {
 import { count, eq, ilike } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 
-// Create a pool of connections to your PostgreSQL database
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false, // Optional: for environments requiring SSL
-});
-
-export const db = drizzle(pool);
+export const db = drizzle(neon(process.env.POSTGRES_URL!));
 
 export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
 
